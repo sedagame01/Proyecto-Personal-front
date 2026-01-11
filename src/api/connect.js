@@ -5,10 +5,9 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4001';
 
 const destinosApi = axios.create({
     baseURL: API_URL,
-    timeout: 10000 // Añadimos un pequeño timeout por seguridad
+    timeout: 10000 
 });
 
-// Interceptor para inyectar el Token en cada petición
 destinosApi.interceptors.request.use(config => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -17,7 +16,6 @@ destinosApi.interceptors.request.use(config => {
     return config;
 });
 
-// Interceptor para manejar errores globales (como tokens expirados)
 destinosApi.interceptors.response.use(
     response => response,
     error => {
