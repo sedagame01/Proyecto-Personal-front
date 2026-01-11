@@ -1,10 +1,6 @@
 import axios from 'axios';
 
-/**
- * Lógica de URL Dinámica:
- * 1. Intenta usar VITE_API_URL (definida en Render).
- * 2. Si no existe (en tu PC), usa el localhost:4001 por defecto.
- */
+
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4001';
 
 const destinosApi = axios.create({
