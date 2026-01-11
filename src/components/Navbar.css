@@ -1,0 +1,95 @@
+.navbar {
+    padding: 0.8rem 2rem;
+    background-color: rgba(20, 20, 20, 0.98);
+    backdrop-filter: blur(10px);
+    display: grid;
+    grid-template-columns: auto 1fr auto; /* Izq | Centro (ocupa espacio) | Der */
+    align-items: center;
+    gap: 20px;
+    border-bottom: 1px solid #333;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-brand a {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: white;
+    text-decoration: none;
+    background: linear-gradient(to right, #3b82f6, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* ESTILOS DE LA BARRA DE BÚSQUEDA */
+.nav-search {
+    display: flex;
+    background: #2a2a2a;
+    border: 1px solid #444;
+    border-radius: 50px;
+    padding: 5px 15px;
+    max-width: 500px;
+    width: 100%;
+    margin: 0 auto; /* Centrar en su columna */
+    transition: border-color 0.2s;
+}
+
+.nav-search:focus-within {
+    border-color: var(--primary);
+}
+
+.nav-search-select {
+    background: transparent !important;
+    border: none !important;
+    color: #ccc !important;
+    font-size: 0.9rem;
+    padding: 5px !important;
+    cursor: pointer;
+    border-right: 1px solid #444 !important;
+    border-radius: 0 !important;
+    outline: none;
+}
+
+.nav-search input {
+    flex: 1;
+    background: transparent !important;
+    border: none !important;
+    color: white !important;
+    outline: none !important;
+    padding: 5px 10px;
+}
+
+.nav-search button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 0 5px;
+}
+
+/* Acciones Derecha */
+.nav-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.user-info, .auth-links {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Ajustes Responsive */
+@media (max-width: 768px) {
+    .navbar {
+        grid-template-columns: 1fr auto;
+        grid-template-rows: auto auto;
+        gap: 10px;
+        padding: 10px;
+    }
+    .nav-search {
+        grid-column: 1 / -1; /* Barra abajo en móviles */
+        order: 3;
+    }
+}
