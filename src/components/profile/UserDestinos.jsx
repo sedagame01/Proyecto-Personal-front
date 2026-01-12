@@ -29,7 +29,6 @@ export const UserDestinos = ({ destinos, onDelete, onView }) => {
                             </span>
                         </div>
                         <div className="destino-actions">
-                            {/* AQUI EL CAMBIO: Agregamos onClick */}
                             <button 
                                 className="btn-view" 
                                 onClick={() => onView(destino)}

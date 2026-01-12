@@ -26,7 +26,6 @@ destinosApi.interceptors.response.use(
         if (error.response?.status === 401) {
             console.log("Sesión expirada o token inválido - Cerrando sesión");
             localStorage.removeItem('token');
-            // Opcional: window.location.href = '/login';
         }
         
         return Promise.reject(error);
