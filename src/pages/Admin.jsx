@@ -91,7 +91,7 @@ export const Admin = () => {
     const handleDeleteReview = async (reviewId) => {
         if (!window.confirm("¿Eliminar esta reseña permanentemente?")) return;
         try {
-            await destinosApi.delete(`/admin/review/${reviewId}`);
+            await destinosApi.delete(`/admin/reviews/${reviewId}`);
             // Actualizar el estado local para que desaparezca del modal sin cerrarlo
             setSelectedItem(prev => ({
                 ...prev,

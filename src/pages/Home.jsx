@@ -124,7 +124,7 @@ export const Home = () => {
                                                     <img src={item.images?.[0] || '/placeholder.jpg'} alt={item.name} />
                                                     <div className="card-body">
                                                         <h3>{item.name}</h3>
-                                                        <p>📍 {item.province}</p>
+                                                        <p> {item.province}</p>
                                                     </div>
                                                 </>
                                             ) : (
@@ -145,7 +145,7 @@ export const Home = () => {
                     ) : (
                         // MODO DEFAULT (Destacados)
                         <>
-                            <h2 className="section-title">📍 Destinos Destacados</h2>
+                            <h2 className="section-title"> Destinos Destacados</h2>
                             <div className="cards-grid">
                                 {destinosDestacados.map(d => (
                                     <Link 
@@ -157,7 +157,7 @@ export const Home = () => {
                                             <img src={d.images?.[0] || '/placeholder.jpg'} alt={d.name} />
                                             <div className="card-body">
                                                 <h3>{d.name}</h3>
-                                                <p>📍 {d.province}</p>
+                                                <p> {d.province}</p>
                                             </div>
                                         </div>
                                     </Link>

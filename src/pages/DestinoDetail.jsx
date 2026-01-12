@@ -60,7 +60,7 @@ export const DestinoDetail = () => {
                 <div className="detail-header">
                     <h1>{destino.name}</h1>
                     <p className="detail-meta">
-                        📍 {destino.province} <span>|</span> 👤 Autor: {destino.autor}
+                         {destino.province} <span>|</span> 👤 Autor: {destino.autor}
                     </p>
                 </div>
 
@@ -75,7 +75,7 @@ export const DestinoDetail = () => {
                     {/* Formulario */}
                     {status === 'auth' && (
                         <form onSubmit={handleReview} className="review-form">
-                            <h4>✍️ Deja tu opinión</h4>
+                            <h4> Deja tu opinión</h4>
                             <div className="form-row">
                                 <select 
                                     value={stars} 
