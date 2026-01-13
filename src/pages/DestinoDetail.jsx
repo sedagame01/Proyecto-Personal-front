@@ -2,6 +2,8 @@ import { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { AuthContext } from '../context/Auth';
 import destinosApi from '../api/connect';
+import { toast } from 'react-toastify';
+
 import './DestinoDetail.css'; // <--- IMPORTANTE: Importa el nuevo CSS
 
 export const DestinoDetail = () => {
@@ -36,10 +38,10 @@ export const DestinoDetail = () => {
                 comment,
                 stars
             });
-            alert('Reseña enviada');
+            toast.success('Reseña enviada');
             window.location.reload();
         } catch (error) {
-            alert('Error al enviar reseña');
+            toast.error('Error al enviar reseña');
         }
     };
 
