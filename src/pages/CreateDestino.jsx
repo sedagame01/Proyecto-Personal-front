@@ -1,22 +1,23 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/Auth';
 import destinosApi from '../api/connect';
+import { toast } from 'react-toastify';
 import './CreateDestino.css';
 
 export const CreateDestino = () => {
     const { user } = useContext(AuthContext);
     const navigate = useNavigate();
+    const fileInputRef = useRef(null);
     
     const [formData, setFormData] = useState({
         name: '',
         description: '',
         province: '',
-        images: [''],
-        status: 'pending',
         is_public: true
     });
     
+    const [files, setFiles] = useState([]); // Cambiar de URLs a archivos
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
@@ -26,42 +27,65 @@ export const CreateDestino = () => {
         setError('');
 
         try {
-            const response = await destinosApi.post('/user/sugerir', { 
-                ...formData,
-                // Filtramos imágenes vacías antes de enviar
-                images: formData.images.filter(img => img.trim() !== '')
+            // Crear FormData en lugar de enviar JSON
+            const formDataToSend = new FormData();
+            
+            // Agregar campos del formulario
+            formDataToSend.append('name', formData.name);
+            formDataToSend.append('description', formData.description);
+            formDataToSend.append('province', formData.province);
+            formDataToSend.append('is_public', formData.is_public);
+            
+            // Agregar archivos (cada uno con el campo 'file')
+            files.forEach((file, index) => {
+                formDataToSend.append('file', file); // 'file' debe coincidir con el backend
+            });
+            
+            // Obtener token del contexto
+            const token = user?.token; // Ajusta según cómo tengas el token
+            
+            const response = await destinosApi.post('/user/sugerir', formDataToSend, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${token}`
+                }
             });
 
             if (response.data.ok) {
-                alert('¡Destino enviado para aprobación!');
+                toast.success('¡Destino enviado para aprobación!');
                 navigate('/perfil');
             } else {
+                toast.error('Error al guardar el destino');
                 setError('El servidor no confirmó el guardado.');
             }
         } catch (error) {
             console.error("Error al enviar:", error);
+            toast.error('Error al conectar con el servidor');   
             setError(error.response?.data?.msg || 'Error al conectar con el servidor');
         } finally {
             setLoading(false); 
         }
     };
 
-    const addImageField = () => {
-        setFormData({
-            ...formData,
-            images: [...formData.images, '']
-        });
+    const handleFileChange = (e, index) => {
+        const newFiles = [...files];
+        newFiles[index] = e.target.files[0];
+        setFiles(newFiles);
     };
 
-    const updateImage = (index, value) => {
-        const newImages = [...formData.images];
-        newImages[index] = value;
-        setFormData({ ...formData, images: newImages });
+    const addFileField = () => {
+        setFiles([...files, null]);
     };
 
-    const removeImage = (index) => {
-        const newImages = formData.images.filter((_, i) => i !== index);
-        setFormData({ ...formData, images: newImages });
+    const removeFile = (index) => {
+        const newFiles = files.filter((_, i) => i !== index);
+        setFiles(newFiles);
+    };
+
+    // Función para mostrar vista previa
+    const getPreviewUrl = (file) => {
+        if (!file) return '';
+        return URL.createObjectURL(file);
     };
 
     return (
@@ -70,7 +94,7 @@ export const CreateDestino = () => {
                 <h1>Crear Nuevo Destino</h1>
                 <p className="subtitle">Comparte un lugar especial con la comunidad</p>
                 
-                <form onSubmit={handleSubmit} className="destino-form">
+                <form onSubmit={handleSubmit} className="destino-form" encType="multipart/form-data">
                     <div className="form-group">
                         <label htmlFor="name">Nombre del destino *</label>
                         <input
@@ -160,34 +184,46 @@ export const CreateDestino = () => {
                     </div>
 
                     <div className="form-group">
-                        <label>Imágenes (URLs)</label>
-                        {formData.images.map((image, index) => (
-                            <div key={index} className="image-input-group">
-                                <input
-                                    type="url"
-                                    value={image}
-                                    onChange={(e) => updateImage(index, e.target.value)}
-                                    placeholder="https://ejemplo.com/imagen.jpg"
-                                />
-                                {formData.images.length > 1 && (
+                        <label>Imágenes</label>
+                        {files.map((file, index) => (
+                            <div key={index} className="file-input-group">
+                                <div className="file-preview">
+                                    {file && (
+                                        <div className="preview-container">
+                                            <img 
+                                                src={getPreviewUrl(file)} 
+                                                alt="Vista previa" 
+                                                className="image-preview"
+                                            />
+                                            <span className="file-name">{file.name}</span>
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="file-actions">
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) => handleFileChange(e, index)}
+                                        className="file-input"
+                                    />
                                     <button
                                         type="button"
-                                        className="remove-image-btn"
-                                        onClick={() => removeImage(index)}
+                                        className="remove-file-btn"
+                                        onClick={() => removeFile(index)}
                                     >
-                                        ✕
+                                        ✕ Eliminar
                                     </button>
-                                )}
+                                </div>
                             </div>
                         ))}
                         <button
                             type="button"
-                            className="add-image-btn"
-                            onClick={addImageField}
+                            className="add-file-btn"
+                            onClick={addFileField}
                         >
-                            + Añadir otra imagen
+                            + Añadir imagen
                         </button>
-                        <p className="help-text">Puedes agregar URLs de imágenes públicas</p>
+                        <p className="help-text">Formatos recomendados: JPG, PNG, WEBP. Tamaño máximo: 5MB</p>
                     </div>
 
                     <div className="form-group checkbox-group">
@@ -215,7 +251,7 @@ export const CreateDestino = () => {
                         <button
                             type="submit"
                             className="btn-submit"
-                            disabled={loading}
+                            disabled={loading || files.length === 0}
                         >
                             {loading ? 'Enviando...' : 'Enviar para aprobación'}
                         </button>

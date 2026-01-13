@@ -1,16 +1,18 @@
-import { useState, useEffect, use } from 'react';
+// Moderator.jsx - CORREGIDO
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import { toast } from 'react-toastify';
 import destinosApi from '../api/connect';
 import { Modal } from '../components/Modal';
 import './Moderator.css';
 
 export const Moderator = () => {
-    const navigate = useNavigate(); 
-    const [view, setView] = useState('pendientes'); 
+    const navigate = useNavigate();
+    const [view, setView] = useState('pendientes');
     const [dataList, setDataList] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
+    const [modalMode, setModalMode] = useState('view'); // 'view', 'edit', 'editRole'
 
     useEffect(() => {
         fetchData(view);
@@ -23,8 +25,7 @@ export const Moderator = () => {
                 'usuarios': '/admin/users',
                 'pendientes': '/admin/destinations/pending',
                 'aprobados': '/admin/destinations/all',
-/*                 'rechazados': '/admin/destinations/reject'
- */            };
+            };
             const { data } = await destinosApi.get(endpoints[tipo]);
             const responseData = data.data || [];
             
@@ -38,194 +39,208 @@ export const Moderator = () => {
         }
     };
 
-    const handleEdit = async (item) => {
+    const handleViewOrEdit = async (item, mode = 'view') => {
         if (view === 'aprobados' || view === 'pendientes') {
             try {
-                
                 const { data } = await destinosApi.get(`/user/destinos/detalle/${item.id}`);
                 if (data.ok) {
                     setSelectedItem(data.data);
+                    setModalMode(mode);
+                    setIsModalOpen(true);
                 }
             } catch (error) {
                 console.error("Error al cargar detalle completo:", error);
-                setSelectedItem(item); // Fallback
+                setSelectedItem(item);
+                setModalMode(mode);
+                setIsModalOpen(true);
             }
         } else {
             setSelectedItem(item);
+            setModalMode(mode);
+            setIsModalOpen(true);
         }
-        setIsModalOpen(true);
     };
 
     const handleSave = async () => {
         try {
             if (view === 'usuarios') {
-                await destinosApi.put(`/admin/users/${selectedItem.id}`, { role: selectedItem.role,id: selectedItem.id , username: selectedItem.username, email: selectedItem.email });
+                await destinosApi.put(`/admin/users/${selectedItem.id}`, { 
+                    role: selectedItem.role,
+                    username: selectedItem.username, 
+                    email: selectedItem.email 
+                });
+                toast.success("Usuario actualizado con éxito");
             } else {
-                // Enviar actualización completa de destino
                 await destinosApi.put(`/admin/destinations/${selectedItem.id}`, {
                     name: selectedItem.name,
                     description: selectedItem.description,
                     province: selectedItem.province,
                     images: Array.isArray(selectedItem.images) ? selectedItem.images : selectedItem.images.split(','),
                     is_public: selectedItem.is_public,
-                    
                 });
+                toast.success("Destino actualizado con éxito");
             }
-            alert("Actualizado con éxito");
             setIsModalOpen(false);
             fetchData(view);
         } catch (error) {
-            alert("Error al guardar cambios");
+            toast.error("Error al guardar cambios");
         }
     };
 
     const handleDelete = async (id) => {
         if (!window.confirm("¿Estás seguro de eliminar este elemento?")) return;
         try {
-            const endpoint = view === 'usuarios' ? `/admin/users/${id}` : `/admin/destinations/${id}`;
+            const endpoint = view === 'usuarios' ? `/admin/users/${id}` : `/admin/destinations/reject/${id}`;
             await destinosApi.delete(endpoint);
             setDataList(prev => prev.filter(item => item.id !== id));
+            toast.success("Elemento eliminado con éxito");
         } catch (error) {
-            alert("Error al eliminar");
-        }
-    };
-
-    const handleDeleteReview = async (reviewId) => {
-        if (!window.confirm("¿Eliminar esta reseña permanentemente?")) return;
-        try {
-            await destinosApi.delete(`/admin/reviews/${reviewId}`);
-            setSelectedItem(prev => ({
-                ...prev,
-                reviews: prev.reviews.filter(r => r.id !== reviewId)
-            }));
-        } catch (error) {
-            alert("Error al borrar la reseña");
+            toast.error("Error al eliminar el elemento");
         }
     };
 
     const handleApprove = async (id) => {
         try {
             const { data } = await destinosApi.patch(`/admin/destinations/approve/${id}`);
-            if (data.ok) fetchData(view);
+            if (data.ok) {
+                fetchData(view);
+                toast.success("Destino aprobado");
+            }
         } catch (error) {
-            alert("Error al aprobar");
+            toast.error("Error al aprobar");
         }
     };
 
     const handleReject = async (id) => {
-        try{
-            console.log()
-            const {data}= await destinosApi.patch(`/admin/destinations/reject/${id}`);
-            if(data.ok) fetchData(view);
-        } catch(error){
-            alert("Error al rechazar")
+        try {
+            const { data } = await destinosApi.patch(`/admin/destinations/reject/${id}`);
+            if (data.ok) {
+                fetchData(view);
+                toast.success("Destino rechazado");
+            }
+        } catch (error) {
+            toast.error("Error al rechazar");
         }
-    }
+    };
 
     return (
         <div className="admin-container">
             <header className="admin-header">
-                <h1>Panel de Administración</h1>
+                <h1>Panel de Moderación</h1>
                 <div className="admin-nav">
                     <button onClick={() => setView('pendientes')} className={view === 'pendientes' ? 'active' : ''}>Pendientes</button>
                     <button onClick={() => setView('aprobados')} className={view === 'aprobados' ? 'active' : ''}>Aprobados</button>
                     <button onClick={() => setView('usuarios')} className={view === 'usuarios' ? 'active' : ''}>Usuarios</button>
-                    {/* <button onClick={() => navigate('/sugerir')} className="btn-create-direct"> + Crear Destino </button> */}
                 </div>
             </header>
 
             <main className="admin-content">
-                <table className="admin-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>{view === 'usuarios' ? 'Username' : 'Nombre'}</th>
-                            <th> </th>
-                            <th>Acciones</th>
-                            
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {dataList.map(item => (
-                            <tr key={item.id}>
-                                <td>{item.id}</td>
-                                <td>{view === 'usuarios' ? item.username : item.name}</td>
-                                <td>{item.role}</td>
-                                <td>
-                                    {view === 'pendientes' && (
-                                        <>
-                                        <button className="btn-approve" onClick={() => handleApprove(item.id)}>Aprobar</button>
-                                        <button className="btn-reject" onClick={()=> handleReject(item.id)}>Rechazar</button>
-                                         </>  
-                                        
-                                    )}
-                                    <button className="btn-edit" onClick={() => handleEdit(item)}>ver</button>
-                                    <button className="btn-delete" onClick={() => handleDelete(item.id)}>Eliminar</button>
-                                     
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </main>
+    <table className="admin-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>{view === 'usuarios' ? 'Username' : 'Nombre'}</th>
+                {view === 'usuarios' && <th>Rol</th>}
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {dataList.map(item => (
+                <tr key={item.id}>
+                    <td>{item.id}</td>
+                    <td>{view === 'usuarios' ? item.username : item.name}</td>
+                    {view === 'usuarios' && <td>{item.role}</td>}
+                    <td>
+                        {view === 'pendientes' && (
+                            <>
+                                <button className="btn-approve" onClick={() => handleApprove(item.id)}>Aprobar</button>
+                                <button className="btn-reject" onClick={() => handleReject(item.id)}>Rechazar</button>
+                            </>  
+                        )}
+                        <button className="btn-edit" onClick={() => handleViewOrEdit(item, 'view')}>Ver</button>
+                        {view !== 'pendientes' && (
+                            <button className="btn-edit" onClick={() => handleViewOrEdit(item, view === 'usuarios' ? 'editRole' : 'edit')}>
+                                {view === 'usuarios' ? 'Cambiar Rol' : 'Editar'}
+                            </button>
+                        )}
+                        <button className="btn-delete" onClick={() => handleDelete(item.id)}>Eliminar</button>
+                    </td>
+                </tr>
+            ))}
+        </tbody>
+    </table>
+</main>
 
             <Modal 
                 isOpen={isModalOpen} 
                 onClose={() => setIsModalOpen(false)} 
-                title={`Editar ${view === 'usuarios' ? 'Usuario' : 'Destino'}`}
-                onSave={handleSave}
+                title={modalMode === 'editRole' ? 'Cambiar Rol de Usuario' : 
+                       modalMode === 'edit' ? 'Editar Destino' : 
+                       view === 'usuarios' ? 'Información de Usuario' : 'Detalles del Destino'}
+                onSave={modalMode !== 'view' ? handleSave : null}
+                mode={modalMode}
             >
                 <div className="admin-edit-form">
                     {view === 'usuarios' ? (
                         <>
                             <label>Nombre de Usuario</label>
-                            <input type="text" value={selectedItem?.username || ''} onChange={(e) => setSelectedItem({...selectedItem, username: e.target.value})} disabled/>
+                            <input 
+                                type="text" 
+                                value={selectedItem?.username || ''} 
+                                readOnly={modalMode !== 'editRole'}
+                                onChange={(e) => modalMode === 'editRole' && setSelectedItem({...selectedItem, username: e.target.value})}
+                            />
                             <label>Email</label>
-                            <input type="email" value={selectedItem?.email || ''} onChange={(e) => setSelectedItem({...selectedItem, email: e.target.value})} disabled />
+                            <input 
+                                type="email" 
+                                value={selectedItem?.email || ''} 
+                                readOnly={modalMode !== 'editRole'}
+                                onChange={(e) => modalMode === 'editRole' && setSelectedItem({...selectedItem, email: e.target.value})}
+                            />
                             <label>Rol</label>
-                                    <select
-                                    className='form-group'
-                                    value={selectedItem?.rol || 'user'}
-                                    onChange={(e) => setSelectedItem({ ...selectedItem, role: e.target.value })}
-                                    >
-                                    <option value="user">Usuario</option>
-                                    <option value="moderator">Moderador</option>
-                                    <option value="banned">Baneado</option>
-                                    </select>
-                            
-                           
+                            <select
+                                value={selectedItem?.role || 'user'}
+                                onChange={(e) => setSelectedItem({ ...selectedItem, role: e.target.value })}
+                                disabled={modalMode === 'view'}
+                                className={modalMode === 'view' ? 'readonly-select' : ''}
+                            >
+                                <option value="user">Usuario</option>
+                                <option value="moderator">Moderador</option>
+                                <option value="banned">Baneado</option>
+                            </select>
                         </>
                     ) : (
                         <>
                             <label>Nombre del Destino</label>
-                            <input type="text" value={selectedItem?.name || ''} onChange={(e) => setSelectedItem({...selectedItem, name: e.target.value})} disabled/>
+                            <input 
+                                type="text" 
+                                value={selectedItem?.name || ''} 
+                                readOnly={modalMode === 'view'}
+                                onChange={(e) => modalMode === 'edit' && setSelectedItem({...selectedItem, name: e.target.value})}
+                            />
                             
                             <label>Provincia</label>
-                            <input type="text" value={selectedItem?.province || ''} onChange={(e) => setSelectedItem({...selectedItem, province: e.target.value})} disabled />
+                            <input 
+                                type="text" 
+                                value={selectedItem?.province || ''} 
+                                readOnly={modalMode === 'view'}
+                                onChange={(e) => modalMode === 'edit' && setSelectedItem({...selectedItem, province: e.target.value})}
+                            />
                             
                             <label>Descripción</label>
-                            <textarea value={selectedItem?.description || ''} onChange={(e) => setSelectedItem({...selectedItem, description: e.target.value})} disabled />
+                            <textarea 
+                                value={selectedItem?.description || ''} 
+                                readOnly={modalMode === 'view'}
+                                onChange={(e) => modalMode === 'edit' && setSelectedItem({...selectedItem, description: e.target.value})}
+                            />
                             
                             <label>URLs de Imágenes (separadas por coma)</label>
                             <textarea 
                                 value={Array.isArray(selectedItem?.images) ? selectedItem.images.join(', ') : selectedItem?.images || ''} 
-                                onChange={(e) => setSelectedItem({...selectedItem, images: e.target.value})}
+                                onChange={(e) => modalMode === 'edit' && setSelectedItem({...selectedItem, images: e.target.value})}
+                                readOnly={modalMode === 'view'}
                                 placeholder="https://imagen1.jpg, https://imagen2.jpg"
-                            disabled/>
-
-                            <div className="admin-reviews-management">
-                                <h3>Gestión de Reseñas</h3>
-                                <div className="admin-reviews-list">
-                                    {selectedItem?.reviews?.length > 0 ? (
-                                        selectedItem.reviews.map(rev => (
-                                            <div key={rev.id} className="admin-review-card">
-                                                <p><strong>{rev.username} (⭐{rev.stars}):</strong> {rev.comment}</p>
-                                                <button onClick={() => handleDeleteReview(rev.id)} className="btn-del-rev">Eliminar</button>
-                                            </div>
-                                        ))
-                                    ) : <p>Sin reseñas.</p>}
-                                </div>
-                            </div>
+                            />
                         </>
                     )}
                 </div>

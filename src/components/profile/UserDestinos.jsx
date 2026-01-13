@@ -5,6 +5,7 @@ import './Profile.css';
 
 
 export const UserDestinos = ({ destinos, onDelete, onView }) => {
+    
     const [view, setView] = useState('destinos');
     const [selectedItem, setSelectedItem] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -92,11 +93,11 @@ export const UserDestinos = ({ destinos, onDelete, onView }) => {
                         <div className="destino-actions">
                             <button 
                                 className="btn-view" 
-                                onClick={() => onView(destino)}
+                                onClick={(e) => onView(destino,e.target.textContent)}
                             >
                                 Ver
                             </button>
-                            <button className="btn-edit" onClick={() => handleEdit(destino)}>Editar</button>
+                            <button className="btn-edit" onClick={(e) => handleEdit(destino)}>Editar</button>
                             <button 
                                 className="btn-delete"
                                 onClick={() => onDelete(destino.id)}

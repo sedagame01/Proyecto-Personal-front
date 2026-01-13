@@ -1,6 +1,7 @@
+// Modal.jsx
 import './Modal.css';
 
-export const Modal = ({ isOpen, onClose, title, children, onSave }) => {
+export const Modal = ({ isOpen, onClose, title, children, onSave, mode = 'edit' }) => {
     if (!isOpen) return null;
 
     return (
@@ -14,8 +15,12 @@ export const Modal = ({ isOpen, onClose, title, children, onSave }) => {
                     {children}
                 </div>
                 <div className="modal-footer">
-                    <button className="btn-cancel" onClick={onClose}>Cancelar</button>
-                    <button className="btn-save" onClick={onSave}>Guardar Cambios</button>
+                    <button className="btn-cancel" onClick={onClose}>
+                        {mode === 'view' ? 'Cerrar' : 'Cancelar'}
+                    </button>
+                    {mode !== 'view' && (
+                        <button className="btn-save" onClick={onSave}>Guardar Cambios</button>
+                    )}
                 </div>
             </div>
         </div>

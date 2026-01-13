@@ -16,12 +16,7 @@ export const ProfileHeader = ({ user, profileData, onEdit }) => {
                 <p className="profile-email"> {profileData?.email}</p>
                 <p className="profile-score">🏆 Puntos: {profileData?.puntuaciontotal || 0}</p>
             </div>
-            <button 
-                className="btn-edit-profile"
-                onClick={onEdit}
-            >
-                 Editar Perfil
-            </button>
+            
         </div>
     );
 };

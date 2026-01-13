@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect } from 'react';
+import { useCookies } from 'react-cookie';
 import destinosApi from '../api/connect';
 
 export const AuthContext = createContext();
@@ -6,13 +7,14 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [status, setStatus] = useState('checking');
+    const [cookies, setCookie, removeCookie] = useCookies(['token']);
 
     useEffect(() => {
         checkToken();
     }, []);
 
     const checkToken = async () => {
-        const token = localStorage.getItem('token');
+        const token = cookies.token; // CAMBIO: Leer de la cookie
         if (!token) {
             setStatus('not-auth');
             return;
@@ -21,29 +23,28 @@ export const AuthProvider = ({ children }) => {
         try {
             const { data } = await destinosApi.get('/renew');
             if (data.ok) {
-                //para los refres el back manda el id y el rol suelto (lo mando en usuario en el login ) cambiarlo luego ¡
                 setUser({ 
                     uid: data.uid, 
                     rol: data.rol 
                 });
                 setStatus('auth');
-            } else {
-                throw new Error('Token invalido');
             }
         } catch (error) {
-            localStorage.clear();
+            removeCookie('token', { path: '/' }); // CAMBIO: Limpiar cookie
             setUser(null);
             setStatus('not-auth');
         }
     };
+
     const login = (userData, token) => {
-        localStorage.setItem('token', token);
+        // CAMBIO: Guardar en cookie (expira en 1 día)
+        setCookie('token', token, { path: '/', maxAge: 86400, sameSite: 'lax' });
         setUser(userData);
         setStatus('auth');
     };
 
     const logout = () => {
-        localStorage.clear();
+        removeCookie('token', { path: '/' }); // CAMBIO: Borrar cookie
         setUser(null);
         setStatus('not-auth');
     };

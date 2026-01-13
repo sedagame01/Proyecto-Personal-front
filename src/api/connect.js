@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { Cookies } from 'react-cookie';
 
-
+const cookies = new Cookies();
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4001';
 
 const destinosApi = axios.create({
@@ -9,7 +10,8 @@ const destinosApi = axios.create({
 });
 
 destinosApi.interceptors.request.use(config => {
-    const token = localStorage.getItem('token');
+    // CAMBIO: Leer desde cookie
+    const token = cookies.get('token');
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
@@ -19,15 +21,10 @@ destinosApi.interceptors.request.use(config => {
 destinosApi.interceptors.response.use(
     response => response,
     error => {
-        if (error.code === 'ECONNABORTED') {
-            console.error("La conexión ha tardado demasiado (Timeout)");
-        }
-        
         if (error.response?.status === 401) {
-            console.log("Sesión expirada o token inválido - Cerrando sesión");
-            localStorage.removeItem('token');
+            // CAMBIO: Borrar cookie en caso de error 401
+            cookies.remove('token', { path: '/' });
         }
-        
         return Promise.reject(error);
     }
 );

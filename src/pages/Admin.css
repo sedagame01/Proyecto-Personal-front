@@ -1,195 +1,179 @@
-/* Contenedor principal */
+/* Admin.css - Unificado */
 .admin-container {
-    min-height: 100vh;
-    background-color: #121212;
-    padding: 40px 20px;
-    color: white;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
+  background-color: var(--bg-main);
+  padding: var(--spacing-2xl) var(--spacing-lg);
 }
 
 .admin-header {
-    text-align: center;
-    margin-bottom: 30px;
+  text-align: center;
+  margin-bottom: var(--spacing-2xl);
 }
 
 .admin-header h1 {
-    color: #ffc107;
-    margin-bottom: 20px;
+  color: var(--color-accent);
+  margin-bottom: var(--spacing-lg);
 }
 
-/* Navegación y Botón Crear */
+/* Navegación */
 .admin-nav {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
-    flex-wrap: wrap;
-    margin-bottom: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+  margin-bottom: var(--spacing-2xl);
 }
 
 .admin-nav button {
-    background: #1e1e1e;
-    border: 1px solid #333;
-    padding: 12px 24px;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    color: #aaa;
-    font-weight: 600;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  color: var(--text-muted);
+  font-weight: 600;
 }
 
-.admin-nav button.active, .admin-nav button:hover:not(.btn-create-direct) {
-    border-color: #ffc107;
-    color: white;
-    background: #252525;
-    transform: translateY(-2px);
+.admin-nav button.active,
+.admin-nav button:hover:not(.btn-create-direct) {
+  border-color: var(--color-accent);
+  color: var(--text-primary);
+  background: var(--bg-input);
+  transform: translateY(-2px);
 }
 
-/* Botón especial para Crear */
 .btn-create-direct {
-    background: #ffc107 !important;
-    color: #000 !important;
-    border: none !important;
+  background: var(--color-accent) !important;
+  color: var(--text-dark) !important;
+  border: none !important;
 }
 
 .btn-create-direct:hover {
-    background: #e0a800 !important;
-    transform: scale(1.05) !important;
+  background: var(--color-accent-hover) !important;
+  transform: scale(1.05) !important;
 }
 
 /* Tabla */
 .admin-content {
-    max-width: 1100px;
-    margin: 0 auto;
-    background: #1e1e1e;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  max-width: 1100px;
+  margin: 0 auto;
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-lg);
 }
 
 .admin-table {
-    width: 100%;
-    border-collapse: collapse;
+  width: 100%;
+  border-collapse: collapse;
 }
 
 .admin-table th {
-    border-bottom: 2px solid #333;
-    padding: 15px;
-    text-align: left;
-    color: #ffc107;
-    text-transform: uppercase;
-    font-size: 0.85rem;
+  border-bottom: 2px solid var(--border-color);
+  padding: var(--spacing-md);
+  text-align: left;
+  color: var(--color-accent);
+  text-transform: uppercase;
+  font-size: var(--font-sm);
 }
 
 .admin-table td {
-    padding: 15px;
-    border-bottom: 1px solid #2a2a2a;
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--border-color);
 }
 
-/* Botones de acción en tabla */
+/* Botones de acción */
 .admin-table button {
-    padding: 8px 12px;
-    margin-right: 5px;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 0.8rem;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  margin-right: var(--spacing-xs);
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: var(--font-xs);
 }
 
-.btn-approve { background: #28a745; color: white; }
-.btn-edit { background: #007bff; color: white; }
-.btn-delete { background: #dc3545; color: white; }
-.btn-reject { background: #ffd000; color: white; }
+.btn-approve { background: var(--color-success); color: white; }
+.btn-edit { background: var(--color-primary); color: white; }
+.btn-delete { background: var(--color-danger); color: white; }
+.btn-reject { background: var(--color-warning); color: var(--text-dark); }
 
-/* --- FORMULARIO DE EDICIÓN (MODAL) --- */
+/* Formulario de Edición */
 .admin-edit-form {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    max-height: 70vh; /* Para que no se salga de la pantalla si hay muchas reviews */
-    overflow-y: auto;
-    padding-right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  max-height: 70vh;
+  overflow-y: auto;
+  padding-right: var(--spacing-sm);
 }
 
 .admin-edit-form label {
-    color: #ffc107;
-    font-weight: 600;
-    font-size: 0.9rem;
-    margin-top: 5px;
+  color: var(--color-accent);
+  font-weight: 600;
+  font-size: var(--font-sm);
+  margin-top: var(--spacing-xs);
 }
 
-.admin-edit-form input, 
-.admin-edit-form textarea {
-    padding: 12px;
-    background: #2a2a2a;
-    border: 1px solid #444;
-    border-radius: 8px;
-    color: white;
-    font-family: inherit;
-}
-
-.admin-edit-form textarea {
-    min-height: 80px;
-    resize: vertical;
-}
-
-/* --- SECCIÓN DE RESEÑAS DENTRO DEL MODAL --- */
+/* Reviews */
 .admin-reviews-management {
-    margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px dashed #444;
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-lg);
+  border-top: 1px dashed var(--border-color);
 }
 
 .admin-reviews-management h3 {
-    font-size: 1.1rem;
-    margin-bottom: 15px;
-    color: #ffc107;
+  font-size: var(--font-lg);
+  margin-bottom: var(--spacing-md);
+  color: var(--color-accent);
 }
 
 .admin-reviews-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
 }
 
 .admin-review-card {
-    background: #252525;
-    padding: 12px;
-    border-radius: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-left: 4px solid #ffc107;
+  background: var(--bg-input);
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-left: 4px solid var(--color-accent);
 }
 
 .admin-review-card p {
-    margin: 0;
-    font-size: 0.85rem;
-    color: #ddd;
-    flex: 1;
+  margin: 0;
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+  flex: 1;
 }
 
 .btn-del-rev {
-    background: #dc3545;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    cursor: pointer;
-    margin-left: 10px;
+  background: var(--color-danger);
+  color: white;
+  border: none;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-xs);
+  cursor: pointer;
+  margin-left: var(--spacing-sm);
 }
 
 .btn-del-rev:hover {
-    background: #b22a37;
+  background: #b22a37;
 }
 
-/* Scrollbar personalizado para el modal */
+/* Scrollbar */
 .admin-edit-form::-webkit-scrollbar {
-    width: 6px;
+  width: 6px;
 }
+
 .admin-edit-form::-webkit-scrollbar-thumb {
-    background: #444;
-    border-radius: 10px;
+  background: var(--border-color);
+  border-radius: 10px;
 }

@@ -6,9 +6,12 @@ import { ProfileHeader } from '../components/profile/ProfileHeader';
 import { UserDestinos } from '../components/profile/UserDestinos';
 import { UserReviews } from '../components/profile/UserReviews';
 import { Modal } from '../components/Modal'; 
+import { toast } from 'react-toastify';
+
 import '../components/profile/Profile.css';
 
 export const Profile = () => {
+    
     const { user, status } = useContext(AuthContext);
     const location = useLocation();
     const navigate = useNavigate();
@@ -21,6 +24,7 @@ export const Profile = () => {
     // Estados para el Modal de "Ver"
     const [selectedDestino, setSelectedDestino] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedItem, setSelectedItem] = useState('');
 
     useEffect(() => {
         if (status === 'checking') return;
@@ -28,6 +32,7 @@ export const Profile = () => {
             loadProfileData();
         } else {
             setLoading(false);
+            
         }
     }, [status, user, location.key]);
 
@@ -45,29 +50,35 @@ export const Profile = () => {
             if (resReviews.data.ok) setUserReviews(resReviews.data.data);
 
         } catch (error) {
+            toast.error("Error al cargar los datos del perfil");
             console.error(error);
         } finally {
             setLoading(false);
         }
     };
 
-    // LOGICA ELIMINAR
-    const handleDeleteDestino = async (id) => {
-        if (!window.confirm("¿confirma eliminar?")) return;
+ 
+    
 
+    const handleDeleteDestino = async (id) => {
+        if (!window.confirm("¿Confirma eliminar?")) return;
         try {
             const { data } = await destinosApi.delete(`/user/destinos/${id}`);
+            
             if (data.ok) {
                 setUserDestinos(prev => prev.filter(d => d.id !== id));
+                toast.success("Destino eliminado con éxito"); 
             }
         } catch (error) {
-            alert("Error al eliminar");
+            console.error(error);
+            toast.error("Error al eliminar el destino"); 
         }
     };
 
-    // LOGICA VER
-    const handleViewDestino = (destino) => {
+    
+    const handleViewDestino = (destino,texto) => {
         setSelectedDestino(destino);
+        setSelectedItem(texto)
         setIsModalOpen(true);
     };
 
@@ -103,6 +114,7 @@ export const Profile = () => {
                 isOpen={isModalOpen} 
                 onClose={() => setIsModalOpen(false)}
                 title={selectedDestino?.name || 'Detalles'}
+                texto={selectedItem}
             >
                 {selectedDestino && (
                     <div style={{ padding: '10px' }}>

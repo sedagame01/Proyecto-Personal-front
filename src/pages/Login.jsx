@@ -19,19 +19,15 @@ export const Login = () => {
                     uid: data.usuario.id,
                     rol: data.usuario.role
                 };
-
-                if (!data.token) {
-                    alert("Error: No se recibió token");
-                    return;
-                }
                 
+                // CAMBIO: Ya no tocamos localStorage aquí, 
+                // la función 'login' del contexto se encarga de las cookies.
                 login(userToLogin, data.token);
             }
         } catch (error) {
             alert('Credenciales no válidas');
         }
     };
-
     return (
         <div className="login-screen">
             <div className="login-card">
