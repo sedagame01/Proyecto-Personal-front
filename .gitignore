@@ -30,3 +30,4 @@ dist-ssr
 !.yarn/versions
 .yarn
 .pnp.*
+yarn.lock

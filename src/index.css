@@ -1,11 +1,11 @@
 :root {
   /* Paleta de Colores (Modo Oscuro) */
-  --bg-main: #121212;       /* Fondo principal (casi negro) */
-  --bg-card: #1e1e1e;       /* Fondo de tarjetas (gris oscuro) */
+  --bg-main: #43ccea;       /* Fondo principal  */
+  --bg-card: #3c9edb;       /* Fondo de tarjetas  */
   --bg-input: #2a2a2a;      /* Fondo de inputs */
   
   --text-main: #ffffff;     /* Texto principal */
-  --text-secondary: #b0b0b0; /* Texto secundario (gris claro) */
+  --text-secondary: #b0b0b0; /* Texto secundario  */
   
   --primary: #3b82f6;       /* Azul brillante para acciones */
   --primary-hover: #2563eb;

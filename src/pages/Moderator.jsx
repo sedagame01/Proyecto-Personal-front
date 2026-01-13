@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom';
 
 import destinosApi from '../api/connect';
 import { Modal } from '../components/Modal';
-import './Admin.css';
+import './Moderator.css';
 
-export const Admin = () => {
-    const navigate = useNavigate(); // Solución al ReferenceError: navigate
-    const [view, setView] = useState('pendientes'); // Vista por defecto
+export const Moderator = () => {
+    const navigate = useNavigate(); 
+    const [view, setView] = useState('pendientes'); 
     const [dataList, setDataList] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
@@ -140,7 +140,7 @@ export const Admin = () => {
                         <tr>
                             <th>ID</th>
                             <th>{view === 'usuarios' ? 'Username' : 'Nombre'}</th>
-                            
+                            <th> </th>
                             <th>Acciones</th>
                             
                         </tr>
@@ -189,7 +189,6 @@ export const Admin = () => {
                                     onChange={(e) => setSelectedItem({ ...selectedItem, role: e.target.value })}
                                     >
                                     <option value="user">Usuario</option>
-                                    <option value="admin">Administrador</option>
                                     <option value="moderator">Moderador</option>
                                     <option value="banned">Baneado</option>
                                     </select>
@@ -202,17 +201,17 @@ export const Admin = () => {
                             <input type="text" value={selectedItem?.name || ''} onChange={(e) => setSelectedItem({...selectedItem, name: e.target.value})} disabled/>
                             
                             <label>Provincia</label>
-                            <input type="text" value={selectedItem?.province || ''} onChange={(e) => setSelectedItem({...selectedItem, province: e.target.value})} disabled/>
+                            <input type="text" value={selectedItem?.province || ''} onChange={(e) => setSelectedItem({...selectedItem, province: e.target.value})} disabled />
                             
                             <label>Descripción</label>
-                            <textarea value={selectedItem?.description || ''} onChange={(e) => setSelectedItem({...selectedItem, description: e.target.value})} disabled/>
+                            <textarea value={selectedItem?.description || ''} onChange={(e) => setSelectedItem({...selectedItem, description: e.target.value})} disabled />
                             
                             <label>URLs de Imágenes (separadas por coma)</label>
                             <textarea 
                                 value={Array.isArray(selectedItem?.images) ? selectedItem.images.join(', ') : selectedItem?.images || ''} 
                                 onChange={(e) => setSelectedItem({...selectedItem, images: e.target.value})}
                                 placeholder="https://imagen1.jpg, https://imagen2.jpg"
-                            />
+                            disabled/>
 
                             <div className="admin-reviews-management">
                                 <h3>Gestión de Reseñas</h3>

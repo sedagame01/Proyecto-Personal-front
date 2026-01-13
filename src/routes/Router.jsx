@@ -7,6 +7,7 @@ import { Register } from '../pages/Register';
 import { Home } from '../pages/Home';
 import { Profile } from '../pages/Profile';
 import { Admin } from '../pages/Admin'; 
+import { Moderator } from '../pages/Moderator';
 import { DestinoDetail } from '../pages/DestinoDetail';
 import { PublicProfile } from '../pages/PublicProfile';
 import { CreateDestino } from '../pages/CreateDestino';
@@ -47,6 +48,10 @@ export const AppRouter = () => {
                 <Route 
                     path="/admin" 
                     element={status === 'auth' && user?.rol === 'admin' ? <Admin /> : <Navigate to="/" replace />} 
+                />
+                <Route 
+                    path="/moderator" 
+                    element={status === 'auth' && user?.rol === 'moderator' ? <Moderator /> : <Navigate to="/" replace />}
                 />
 
                 <Route path="*" 

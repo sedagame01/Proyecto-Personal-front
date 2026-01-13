@@ -5,8 +5,7 @@ import destinosApi from '../api/connect';
 import { ProfileHeader } from '../components/profile/ProfileHeader';
 import { UserDestinos } from '../components/profile/UserDestinos';
 import { UserReviews } from '../components/profile/UserReviews';
-import { Modal } from '../components/Modal'; // Asegúrate de importar tu Modal
-
+import { Modal } from '../components/Modal'; 
 import '../components/profile/Profile.css';
 
 export const Profile = () => {

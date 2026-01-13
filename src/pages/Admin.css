@@ -100,6 +100,7 @@
 .btn-approve { background: #28a745; color: white; }
 .btn-edit { background: #007bff; color: white; }
 .btn-delete { background: #dc3545; color: white; }
+.btn-reject { background: #ffd000; color: white; }
 
 /* --- FORMULARIO DE EDICIÓN (MODAL) --- */
 .admin-edit-form {

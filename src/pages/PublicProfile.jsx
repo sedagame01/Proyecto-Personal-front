@@ -45,19 +45,23 @@ export const PublicProfile = () => {
 
             <h2>Destinos Publicados</h2>
             <div className="destinos-grid">
-                {destinos.length > 0 ? destinos.map(d => (
+                {destinos.filter(d => d.is_public).length > 0 ? (
+                    destinos.filter(d => d.is_public).map(d => (
                     <div key={d.id} className="destino-card">
                         <img src={d.images?.[0]} alt={d.name} />
                         <div className="destino-content">
-                            <h3>{d.name}</h3>
-                            <p>{d.province}</p>
-                            <a href={`/destino/${d.id}`} className="btn-view" style={{display:'block', textAlign:'center', marginTop:'10px', textDecoration:'none'}}>
-                                Ver Destino
-                            </a>
+                        <h3>{d.name}</h3>
+                        <p>{d.province}</p>
+                        <a href={`/destino/${d.id}`} className="btn-view" style={{display:'block', textAlign:'center', marginTop:'10px', textDecoration:'none'}}>
+                            Ver Destino
+                        </a>
                         </div>
                     </div>
-                )) : <p>Este usuario no tiene destinos públicos.</p>}
-            </div>
+                    ))
+                ) : (
+                    <p>Este usuario no tiene destinos públicos.</p>
+                )}
+                </div>
         </div>
     );
 };

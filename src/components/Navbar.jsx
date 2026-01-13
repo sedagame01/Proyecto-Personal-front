@@ -22,7 +22,7 @@ export const Navbar = () => {
                 {status === 'auth' ? (
                     <div className="user-info">
                         <Link to="/admin" className="link-admin" hidden={user?.rol !== 'admin'}>Admin</Link>
-                        <span className="user-badge">{user?.rol}</span>
+                        <Link to="/moderator" className="link-moderator" hidden={user?.rol !== 'moderator'}>Panel del moderador</Link>
                         <Link to="/perfil" className="profile-link"> Mi Perfil</Link>
                         <button onClick={handleLogout} className="btn-salir">Salir</button>
                     </div>
