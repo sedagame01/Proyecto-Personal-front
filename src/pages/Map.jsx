@@ -16,7 +16,7 @@ let DefaultIcon = L.icon({
 L.Marker.prototype.options.icon = DefaultIcon;
 
 // --- CONSTANTES ---
-const MAP_STYLE = { height: "100%", width: "100%", minHeight: "400px" }; // Aseguramos altura
+const MAP_STYLE = { height: "100%", width: "100%", minHeight: "400px" }; 
 const SPAIN_CENTER = [40.4637, -3.7492];
 
 // controla la camara
